@@ -118,6 +118,7 @@ export default async function (
     let clicks: string[] = [];
     const playFilter = (playInteraction: Interaction): Awaitable<boolean> => {
       if (!playInteraction.isButton()) return false;
+      console.log(playInteraction.user, "clicked", playInteraction.customId)
       if (playInteraction.message.id !== message.id) {
         console.log("Old");
         return false;
@@ -157,6 +158,7 @@ export default async function (
     });
     return new Promise((resolve) => {
       playCollector.on("collect", async (playInteraction) => {
+        console.log(playInteraction.user, "clicked", playInteraction.customId)
         if (
           playInteraction.customId === "declare" &&
           playInteraction.user.id === batsman.id
@@ -200,6 +202,7 @@ export default async function (
           });
         } else {
           clicks.push(playInteraction.user.id);
+          if (playInteraction.deferred || playInteraction.replied) return;
           await playInteraction.deferUpdate();
         }
 
