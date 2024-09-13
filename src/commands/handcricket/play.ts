@@ -90,8 +90,12 @@ export default async function (
     batsman: User,
     bowler: User
   ): Promise<void> {
-    const moves_row_1 = { ...NUM_BTN_ROW_1 };
-    const moves_row_2 = { ...NUM_BTN_ROW_2 };
+    const moves_row_1 = new ActionRowBuilder<MessageActionRowComponentBuilder>({
+      ...NUM_BTN_ROW_1
+    });
+    const moves_row_2 = new ActionRowBuilder<MessageActionRowComponentBuilder>({
+      ...NUM_BTN_ROW_2
+    });
     const declare_button =
       new ActionRowBuilder<MessageActionRowComponentBuilder>({
         components: [

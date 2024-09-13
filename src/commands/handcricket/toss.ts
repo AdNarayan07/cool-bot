@@ -113,8 +113,12 @@ export default async function (
   //-------------------------------------//
 
   async function toss(odd_even_response: string | undefined, odd_even_interaction: ButtonInteraction): Promise<Record<'toss_winner' | 'toss_loser', User> | undefined> {
-    const toss_row_1 = { ...NUM_BTN_ROW_1 }
-    const toss_row_2 = { ...NUM_BTN_ROW_2 }
+    const toss_row_1 = new ActionRowBuilder<MessageActionRowComponentBuilder>({
+      ...NUM_BTN_ROW_1
+    });
+    const toss_row_2 = new ActionRowBuilder<MessageActionRowComponentBuilder>({
+      ...NUM_BTN_ROW_2
+    });
 
     await odd_even_interaction.update({
       content: `${odd_even_choser} and ${other_player}, please select a number!`,
