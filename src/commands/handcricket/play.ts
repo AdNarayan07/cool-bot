@@ -90,8 +90,8 @@ export default async function (
     batsman: User,
     bowler: User
   ): Promise<void> {
-    const moves_row_1 = NUM_BTN_ROW_1;
-    const moves_row_2 = NUM_BTN_ROW_2;
+    const moves_row_1 = { ...NUM_BTN_ROW_1 };
+    const moves_row_2 = { ...NUM_BTN_ROW_2 };
     const declare_button =
       new ActionRowBuilder<MessageActionRowComponentBuilder>({
         components: [
@@ -173,9 +173,13 @@ export default async function (
             if (declareInteraction.customId === "yes") {
               scorecard[inning].inningOverReason =
                 InningsOverReason["Innings Declared"];
+              await playInteraction.editReply({
+                content: "Innings Declared!",
+                components: [],
+              });
               return resolve();
             } else {
-              await declareInteraction.update({
+              await playInteraction.editReply({
                 content: "Innings Not Declared!",
                 components: [],
               });
@@ -184,11 +188,10 @@ export default async function (
 
           declareCollector.on("end", async (_, reason) => {
             if (reason === "time") {
-              confirmDeclareMessage.editable &&
-                (await confirmDeclareMessage.edit({
+              await playInteraction.editReply({
                   content: "Innings Not Declared!",
                   components: [],
-                }));
+                });
             }
           });
         } else {
