@@ -245,8 +245,10 @@ export default async function (
     })
 
     await replyWithCheck(interaction, {
-      content: "Bat or Ball?",
-      embeds: [Embed],
+      content: `${toss_winner}Bat or Ball?`,
+      embeds: [Embed.setDescription(`
+        ${toss_winner} won the toss! What do you want to do first?
+        `)],
       components: [choose_bat_or_ball],
     });
 
@@ -298,11 +300,10 @@ export default async function (
         data = {
           bat1, bat2
         }
-        setTimeout(()=>resolve(data),3000)
-        return;
+        return resolve(data);
       })
       bat_or_ball_collect.on("end", async (clicks)=>{
-        if(clicks.size > 0) return resolve(data);
+        if(clicks.size > 0) return;
         const comment = "Generate comment"
         choose_bat_or_ball.components.forEach((component)=>component.setDisabled(true))
         await replyWithCheck(interaction, {
