@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "module": "ESNext",
+    "module": "Node16",
     "outDir": "build",
     "rootDir": "src",
     "strict": true,
-    "moduleResolution": "Node",
+    "moduleResolution": "Node16",
     "allowSyntheticDefaultImports": true,
 
     "experimentalDecorators": true,
