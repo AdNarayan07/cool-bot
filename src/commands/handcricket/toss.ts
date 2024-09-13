@@ -26,7 +26,7 @@ export default async function (
   const other_player = shuffledUsers[1];
 
   const Embed = new EmbedBuilder({
-    title: `🏏 ${interaction.user} v/s ${mentioned}`,
+    title: `🏏 ${interaction.user.displayName} v/s ${mentioned.displayName}`,
     description: `Toss Happening Commentary`,
   });
   const odd_even_buttons =
