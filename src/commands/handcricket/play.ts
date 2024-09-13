@@ -97,6 +97,7 @@ export default async function (
         components: [
           new ButtonBuilder({
             custom_id: "declare",
+            label: "Declare Innings",
             style: ButtonStyle.Danger,
             disabled: inning == 2,
           }),
