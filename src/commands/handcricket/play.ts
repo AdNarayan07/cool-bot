@@ -103,7 +103,8 @@ export default async function (
           }),
         ],
       });
-
+    
+    await sleep(3000);
     await replyWithCheck(interaction, {
       content: "Let's Play",
       embeds: [heading, bat1scores, bat2scores],
@@ -134,7 +135,7 @@ export default async function (
         return false;
       } else if (
         playInteraction.user.id === batsman.id ||
-        playInteraction.id === bowler.id
+        playInteraction.user.id === bowler.id
       )
         return true;
       else {
@@ -170,8 +171,6 @@ export default async function (
 
           declareCollector.on("collect", async (declareInteraction) => {
             if (declareInteraction.customId === "yes") {
-              confirmDeclareMessage.deletable &&
-                (await confirmDeclareMessage.delete());
               scorecard[inning].inningOverReason =
                 InningsOverReason["Innings Declared"];
               return resolve();
@@ -194,14 +193,10 @@ export default async function (
           });
         } else {
           clicks.push(playInteraction.user.id);
-          const moveMessage = await playInteraction.reply({
+          await playInteraction.reply({
             content: `You chose ${playInteraction.customId}`,
             ephemeral: true,
-            fetchReply: true,
           });
-          setTimeout(() => {
-            moveMessage.deletable && moveMessage.delete();
-          }, 5000);
         }
 
         playCollector.on("end", async (_clicks) => {
