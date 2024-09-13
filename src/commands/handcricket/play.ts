@@ -34,6 +34,13 @@ export default async function (
     2: new Score(),
   };
 
+  enum InningsOverReason {
+    "Time Up",
+    "Batter Out",
+    "Innings Declared",
+    "Target Achieved",
+  }
+
   function generateScorecardDescription(score: Score) {
     return `━━━━━━━━━━━━━━━━━━━━━━
             \n**<:cricket:1029003363758637067> ${score.runs}/${score.wicket}**
@@ -77,13 +84,6 @@ export default async function (
   while (scorecard[2].inningOverReason === undefined) await playMoves(2, bat2, bat1);
   await sleep(5000)
   await finalizeResult();
-
-  enum InningsOverReason {
-    "Time Up",
-    "Batter Out",
-    "Innings Declared",
-    "Target Achieved",
-  }
 
   async function playMoves(
     inning: 1 | 2,
@@ -193,10 +193,7 @@ export default async function (
           });
         } else {
           clicks.push(playInteraction.user.id);
-          await playInteraction.reply({
-            content: `You chose ${playInteraction.customId}`,
-            ephemeral: true,
-          });
+          await playInteraction.deferUpdate();
         }
 
         playCollector.on("end", async (_clicks) => {
@@ -209,8 +206,12 @@ export default async function (
           clicks = [];
           const { [batsman.id]: batsmanInput, [bowler.id]: bowlerInput } =
             moves;
-          if (!batsmanInput || !bowlerInput)
-            return console.error(batsmanInput, bowlerInput);
+          if (!batsmanInput || !bowlerInput){
+            replyWithCheck(interaction, {
+              content: "Didn't recieve two inputs",
+              embeds: [heading.setDescription(`\`bat:${batsmanInput}\`\`ball: ${bowlerInput}\``)]
+            })
+          }
           if (batsmanInput == bowlerInput) {
             scorecard[inning].wicket += 1;
             scorecard[inning].timeline.push("W");
@@ -241,31 +242,24 @@ export default async function (
 
             const commentary = "Comments for score";
             heading.setDescription(commentary);
-            await replyWithCheck(interaction, {
-              embeds: [heading, bat1scores, bat2scores],
-            });
             if (inning === 2 && scorecard[2].runs > scorecard[1].runs) {
                 scorecard[2].inningOverReason =
                   InningsOverReason["Target Achieved"];
     
                 const commentary = "Generate comments for achieved target";
                 heading.setDescription(commentary);
-                bat1scores.setDescription(
-                  generateScorecardDescription(scorecard[1])
-                );
-                bat2scores.setDescription(
-                  generateScorecardDescription(scorecard[2])
-                );
                 [moves_row_1, moves_row_2, declare_button].forEach((row) => {
                   row.components.forEach((component) => {
                     component.setDisabled(true);
                   });
                 });
-                await replyWithCheck(interaction, {
-                  embeds: [heading, bat1scores, bat2scores],
-                  components: [moves_row_1, moves_row_2, declare_button],
-                });
             }
+            bat1scores.setDescription(generateScorecardDescription(scorecard[1]));
+            bat2scores.setDescription(generateScorecardDescription(scorecard[2]));
+            await replyWithCheck(interaction, {
+              embeds: [heading, bat1scores, bat2scores],
+              components: [moves_row_1, moves_row_2, declare_button],
+            });
           }
           resolve();
         });
